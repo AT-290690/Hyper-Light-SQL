@@ -46,6 +46,7 @@
   border: solid 1px var(--border);
   color: var(--icons);
   font-family: var(--font-family);
+  display: none;
 }
 th {
   color: var(--icons);

@@ -122,4 +122,5 @@ document.addEventListener('keydown', e => {
 
 setTimeout(() => {
   document.body.removeChild(document.getElementById('splash-screen'));
+  editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
 }, 1000);
