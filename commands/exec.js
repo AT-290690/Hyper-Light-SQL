@@ -4,6 +4,14 @@ import { editor, State } from '../main.js';
 export const execute = CONSOLE => {
   const CMD = CONSOLE.value.split(' ')[0].trim().toUpperCase();
   switch (CMD) {
+    case 'CREATE':
+      {
+        State.db.run(editor.getValue());
+        editor.setValue('');
+        CONSOLE.value = '';
+        consoleElement.value = '';
+      }
+      break;
     case 'CLEAR':
       {
         editor.setValue('');

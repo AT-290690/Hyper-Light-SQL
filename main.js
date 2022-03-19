@@ -9,12 +9,6 @@ import {
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 export const State = {
-  db: openDatabase(
-    'hyperDB',
-    '1.0',
-    'this is a client side database',
-    2 * 1024 * 1024
-  ),
   lastSelection: ''
 };
 
@@ -25,6 +19,10 @@ const createTable = () => {
   editor.setSize(window.innerWidth - 15, window.innerHeight / 2 - 80);
 };
 
+initSqlJs({
+  locateFile: () => './libs/sql/sql-wasm.wasm'
+}).then(SQL => (State.db = new SQL.Database()));
+
 const run = () => {
   editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
   tableContainer.style.display = 'none';
@@ -33,42 +31,38 @@ const run = () => {
   consoleElement.classList.add('info_line');
   consoleElement.classList.remove('error_line');
 
-  var table = document.createElement('table');
-  var tr = table.insertRow(-1); // TABLE ROW.
+  const table = document.createElement('table');
+  let tr = table.insertRow(-1);
+  const rows = [];
 
-  State.db.transaction(tx => {
-    tx.executeSql(
-      editor.getValue(),
-      [],
-      (tx, results) => {
-        if (!results.rows.length)
-          return editor.setSize(
-            window.innerWidth - 15,
-            window.innerHeight - 80
-          );
+  try {
+    const stmt = State.db.prepare(editor.getValue());
+    while (stmt.step()) {
+      rows.push(stmt.getAsObject());
+    }
+  } catch (err) {
+    printErrors(err);
+  }
 
-        const col = Object.keys(results.rows[0]);
-        col.forEach(key => {
-          var th = document.createElement('th'); // TABLE HEADER.
-          th.innerHTML = key;
-          tr.appendChild(th);
-        });
+  if (!rows.length)
+    return editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
 
-        for (let i = 0; i < results.rows.length; i++) {
-          tr = table.insertRow(-1);
-          for (let j = 0; j < col.length; j++) {
-            var tabCell = tr.insertCell(-1);
-            tabCell.innerHTML = results.rows.item(i)[col[j]];
-          }
-        }
-        tableContainer.appendChild(table);
-        createTable();
-      },
-      (tx, error) => {
-        if (error) printErrors(error.message);
-      }
-    );
-  }, null);
+  const cols = Object.keys(rows[0]);
+  cols.forEach(key => {
+    const th = document.createElement('th');
+    th.innerHTML = key;
+    tr.appendChild(th);
+  });
+
+  for (let i = 0; i < rows.length; i++) {
+    tr = table.insertRow(-1);
+    for (let j = 0; j < cols.length; j++) {
+      const tabCell = tr.insertCell(-1);
+      tabCell.innerHTML = rows[i][cols[j]];
+    }
+  }
+  tableContainer.appendChild(table);
+  createTable();
 };
 window.addEventListener('resize', () => {
   if (tableContainer.innerHTML) {
@@ -86,24 +80,6 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     e.stopPropagation();
     run();
-  } else if (e.key.toLowerCase() === 'q' && e.ctrlKey) {
-    e = e || window.event;
-    e.preventDefault();
-    e.stopPropagation();
-    const selection = editor.getSelection();
-    // const cursor = editor.getCursor();
-    if (selection && !selection.includes('print')) {
-      State.lastSelection = selection;
-      const updatedSelection = `print (${selection})`;
-      editor.replaceSelection(updatedSelection);
-      // editor.setSelection(
-      //   cursor - State.lastSelection.length,
-      //   cursor - State.lastSelection.length + updatedSelection.length
-      // );
-    } else if (selection && State.lastSelection) {
-      editor.replaceSelection(State.lastSelection);
-      State.lastSelection = '';
-    }
   } else if (e.key === 'Enter') {
     if (activeElement === commandElement) {
       execute(commandElement);
@@ -122,5 +98,4 @@ document.addEventListener('keydown', e => {
 
 setTimeout(() => {
   document.body.removeChild(document.getElementById('splash-screen'));
-  editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
 }, 1000);
