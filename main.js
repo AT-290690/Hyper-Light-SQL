@@ -122,6 +122,4 @@ document.addEventListener('keydown', e => {
 
 setTimeout(() => {
   document.body.removeChild(document.getElementById('splash-screen'));
-  editor.setValue(`
-  SELECT * FROM "users";`);
 }, 1000);
