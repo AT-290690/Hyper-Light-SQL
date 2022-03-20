@@ -67,6 +67,11 @@ export const execute = CONSOLE => {
     case 'INFO':
       State.executeSQL(`PRAGMA table_info(${stdArgs[0]})`);
       break;
+    case 'TABLES':
+      State.executeSQL(`SELECT name FROM sqlite_schema
+      WHERE type='table'
+      ORDER BY name;`);
+      break;
     case 'IMPORT':
       State.db = new State.SQL.Database(
         toBinArray(
@@ -173,6 +178,7 @@ export const execute = CONSOLE => {
 -- SELECT: replace content with select query for a [tablename]
 -- TABLE: outputs [tablename] as table
 -- INFO: display schema of [tablename] as table
+-- TABLES: show a list of tables
 -- IMPORT: imports [base64Table]
 -- EXPORT: exports current table as base64 string
 -- STASH: stash all tables in localStorage
