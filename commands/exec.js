@@ -39,7 +39,7 @@ export const execute = CONSOLE => {
         CONSOLE.value = '';
         consoleElement.value = '';
         tableContainer.style.display = 'none';
-        copyButton.style.display = 'none';
+
         editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       }
       break;
@@ -116,7 +116,7 @@ export const execute = CONSOLE => {
       );
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
-      copyButton.style.display = 'none';
+
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
     case 'DROP':
@@ -128,7 +128,7 @@ export const execute = CONSOLE => {
       State.db = new State.SQL.Database();
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
-      copyButton.style.display = 'none';
+
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
     case 'FORGET':

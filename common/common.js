@@ -12,16 +12,17 @@ export const printErrors = errors => {
   consoleElement.value = errors;
 };
 export const copyTable = () => {
-  const stmt = State.db.prepare(
-    editor.getSelection().trim() || editor.getValue() || State.lastQuery
-  );
+  const query =
+    editor.getSelection().trim() || editor.getValue() || State.lastQuery;
+  if (!query) return (consoleElement.value = 'No query result to copy!');
+  const stmt = State.db.prepare(query);
   State.params && stmt.bind(State.params);
   let rows = [];
   const max = {};
-  let cols;
+  let cols = [];
   while (stmt.step()) {
     const content = stmt.getAsObject();
-    if (!cols) cols = stmt.getColumnNames();
+    if (!cols.length) cols = stmt.getColumnNames();
     cols.forEach(
       key =>
         (max[key] = Math.max(
@@ -40,17 +41,35 @@ export const copyTable = () => {
     });
     return string;
   });
+
   cols = cols.map(
     key => ' '.repeat(2) + key + ' '.repeat(max[key] - key.length)
   );
-  navigator.clipboard.writeText(
-    `/*\n${cols.join('')}\n\n${rows.join('\n')}\n*/`
-  );
+
   stmt.free();
   consoleElement.classList.add('info_line');
   consoleElement.classList.remove('error_line');
-  consoleElement.value = 'Copied table to clipboard!';
-  setTimeout(() => (consoleElement.value = ''), 3000);
+  if (!cols.length && !rows.length) {
+    navigator.clipboard.writeText('No results!');
+    return (consoleElement.value = 'No results to copy!');
+  } else {
+    const date = new Date();
+    const formatted =
+      date.getDate() +
+      '-' +
+      (date.getMonth() + 1) +
+      '-' +
+      date.getFullYear() +
+      ' ' +
+      date.getHours() +
+      ':' +
+      date.getMinutes();
+    navigator.clipboard.writeText(
+      `/*\n\n${cols.join('')}\n\n${rows.join('\n')}\n\n ${formatted} */`
+    );
+    consoleElement.value = 'Copied table to clipboard!';
+    setTimeout(() => (consoleElement.value = ''), 3000);
+  }
 };
 export const State = {
   params: null,
@@ -59,7 +78,6 @@ export const State = {
     sql.trim() && (State.lastQuery = sql);
     editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
     tableContainer.style.display = 'none';
-    copyButton.style.display = 'none';
     tableContainer.innerHTML = '';
     consoleElement.value = '';
     consoleElement.classList.add('info_line');
@@ -99,7 +117,6 @@ export const State = {
     }
     tableContainer.appendChild(table);
     tableContainer.style.display = 'block';
-    copyButton.style.display = 'block';
     editor.setSize(window.innerWidth - 15, window.innerHeight / 2 - 80);
   }
 };
