@@ -33,6 +33,7 @@ export const execute = CONSOLE => {
       const stmt = State.db.prepare(
         editor.getSelection().trim() || editor.getValue()
       );
+      State.params && stmt.bind(State.params);
       let rows = [];
       const max = {};
       let cols;
