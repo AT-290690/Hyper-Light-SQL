@@ -7,17 +7,17 @@ import {
 import { editor } from '../main.js';
 
 export const execute = CONSOLE => {
-  const CMD = CONSOLE.value.split(' ')[0].trim().toUpperCase();
+  const stdInput = CONSOLE.value.split(' ');
+  const CMD = stdInput[0].trim().toUpperCase();
+  const stdArgs = stdInput.slice(1);
+
   switch (CMD) {
     case 'CREATE':
       {
         State.db.run(editor.getValue());
-
         editor.setValue('');
         CONSOLE.value = '';
         consoleElement.value = '';
-        commandElement.style.display = 'none';
-        editor.focus();
       }
       break;
     case 'CLEAR':
@@ -68,7 +68,10 @@ export const execute = CONSOLE => {
       commandElement.style.display = 'none';
       editor.focus();
       break;
-
+    case 'TABLE':
+      State.executeSQL(`SELECT * FROM ${stdArgs[0]}`);
+      CONSOLE.value = '';
+      break;
     case 'EMPLOYEES':
       editor.setValue(`DROP TABLE IF EXISTS employees;
       CREATE TABLE employees( id          integer,  name    text,
@@ -96,7 +99,7 @@ export const execute = CONSOLE => {
       break;
 
     case 'HELP':
-      CONSOLE.value = 'CREATE, CLEAR, COPY, SAVE, EMPLOYEES, HELP';
+      CONSOLE.value = 'CREATE, CLEAR, COPY, SAVE, TABLE, EMPLOYEES, HELP';
       break;
     default:
       printErrors(CMD + ' does not exist!');
