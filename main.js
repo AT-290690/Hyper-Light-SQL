@@ -4,7 +4,8 @@ import {
   tableContainer,
   editorContainer,
   commandElement,
-  State
+  State,
+  toBinArray
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -12,7 +13,7 @@ editor.changeFontSize('12px');
 editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
 initSqlJs({
   locateFile: () => './libs/sql/sql-wasm.wasm'
-}).then(SQL => (State.db = new SQL.Database()));
+}).then(SQL => (State.SQL = SQL));
 
 window.addEventListener('resize', () =>
   tableContainer.innerHTML
@@ -45,4 +46,6 @@ document.addEventListener('keydown', e => {
 
 setTimeout(() => {
   document.body.removeChild(document.getElementById('splash-screen'));
+  const db = window.localStorage.getItem('HyperLightDB');
+  State.db = new State.SQL.Database(db && toBinArray(db));
 }, 1000);

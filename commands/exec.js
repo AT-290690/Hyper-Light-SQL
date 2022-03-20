@@ -2,7 +2,9 @@ import {
   consoleElement,
   printErrors,
   State,
-  commandElement
+  commandElement,
+  toBinString,
+  toBinArray
 } from '../common/common.js';
 import { editor } from '../main.js';
 
@@ -80,6 +82,30 @@ export const execute = CONSOLE => {
       State.executeSQL(`SELECT * FROM ${stdArgs[0]}`);
       CONSOLE.value = '';
       break;
+    case 'IMPORT':
+      State.db = new State.SQL.Database(
+        new Uint8Array(
+          toBinArray(
+            LZUTF8.decompress(stdArgs[0], {
+              inputEncoding: 'Base64',
+              outputEncoding: 'String'
+            })
+          )
+        )
+      );
+      CONSOLE.value = '';
+      break;
+    case 'EXPORT':
+      CONSOLE.value = LZUTF8.compress(toBinString(State.db.export()), {
+        outputEncoding: 'Base64'
+      });
+      break;
+    case 'STASH':
+      window.localStorage.setItem(
+        'HyperLightDB',
+        toBinString(State.db.export())
+      );
+      break;
     case 'EMPLOYEES':
       editor.setValue(`DROP TABLE IF EXISTS employees;
       CREATE TABLE employees( id          integer,  name    text,
@@ -108,7 +134,7 @@ export const execute = CONSOLE => {
 
     case 'HELP':
       CONSOLE.value =
-        'CREATE, CLEAR, COPY, SAVE, SELECT, TABLE, EMPLOYEES, HELP';
+        'CREATE, CLEAR, COPY, SAVE, SELECT, TABLE, EXPORT, EMPLOYEES, HELP';
       break;
     default:
       printErrors(CMD + ' does not exist!');

@@ -56,3 +56,26 @@ export const State = {
     editor.setSize(window.innerWidth - 15, window.innerHeight / 2 - 80);
   }
 };
+
+export const toBinArray = str => {
+  var l = str.length,
+    arr = new Uint8Array(l);
+  for (var i = 0; i < l; i++) arr[i] = str.charCodeAt(i);
+  return arr;
+};
+
+export const toBinString = arr => {
+  var uarr = new Uint8Array(arr);
+  var strings = [],
+    chunksize = 0xffff;
+  // There is a maximum stack size. We cannot call String.fromCharCode with as many arguments as we want
+  for (var i = 0; i * chunksize < uarr.length; i++) {
+    strings.push(
+      String.fromCharCode.apply(
+        null,
+        uarr.subarray(i * chunksize, (i + 1) * chunksize)
+      )
+    );
+  }
+  return strings.join('');
+};
