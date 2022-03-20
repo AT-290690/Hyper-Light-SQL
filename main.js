@@ -5,7 +5,8 @@ import {
   editorContainer,
   commandElement,
   State,
-  toBinArray
+  toBinArray,
+  consoleElement
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -41,6 +42,15 @@ document.addEventListener('keydown', e => {
       commandElement.style.display = 'none';
       editor.focus();
     }
+  }
+});
+
+consoleElement.addEventListener('dblclick', () => {
+  if (commandElement.style.display === 'none') {
+    commandElement.style.display = 'block';
+    commandElement.focus();
+  } else {
+    commandElement.style.display = 'none';
   }
 });
 
