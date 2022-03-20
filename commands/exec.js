@@ -84,13 +84,11 @@ export const execute = CONSOLE => {
       break;
     case 'IMPORT':
       State.db = new State.SQL.Database(
-        new Uint8Array(
-          toBinArray(
-            LZUTF8.decompress(stdArgs[0], {
-              inputEncoding: 'Base64',
-              outputEncoding: 'String'
-            })
-          )
+        toBinArray(
+          LZUTF8.decompress(stdArgs[0], {
+            inputEncoding: 'Base64',
+            outputEncoding: 'String'
+          })
         )
       );
       CONSOLE.value = '';
@@ -103,8 +101,11 @@ export const execute = CONSOLE => {
     case 'STASH':
       window.localStorage.setItem(
         'HyperLightDB',
-        toBinString(State.db.export())
+        LZUTF8.compress(toBinString(State.db.export()), {
+          outputEncoding: 'Base64'
+        })
       );
+      CONSOLE.value = '';
       break;
     case 'EMPLOYEES':
       editor.setValue(`DROP TABLE IF EXISTS employees;

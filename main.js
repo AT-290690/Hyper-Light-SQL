@@ -47,5 +47,13 @@ document.addEventListener('keydown', e => {
 setTimeout(() => {
   document.body.removeChild(document.getElementById('splash-screen'));
   const db = window.localStorage.getItem('HyperLightDB');
-  State.db = new State.SQL.Database(db && toBinArray(db));
+  State.db = new State.SQL.Database(
+    db &&
+      toBinArray(
+        LZUTF8.decompress(db, {
+          inputEncoding: 'Base64',
+          outputEncoding: 'String'
+        })
+      )
+  );
 }, 1000);
