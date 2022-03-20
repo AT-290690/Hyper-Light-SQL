@@ -94,8 +94,9 @@ export const execute = CONSOLE => {
       consoleElement.value = '';
 
       break;
+
     case 'HELP':
-      // CONSOLE.value = 'ENCODE: encode \nDECODE: \nCLEAR:  \nRESET:';
+      CONSOLE.value = 'CREATE, CLEAR, COPY, SAVE, EMPLOYEES, HELP';
       break;
     default:
       printErrors(CMD + ' does not exist!');
