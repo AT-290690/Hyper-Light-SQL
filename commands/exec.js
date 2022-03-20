@@ -93,6 +93,15 @@ export const execute = CONSOLE => {
       );
       CONSOLE.value = '';
       break;
+    case 'SET':
+      {
+        State.params = JSON.parse(stdArgs.join(' '));
+        State.executeSQL();
+      }
+      break;
+    case 'PARAMS':
+      CONSOLE.value = `SET ${State.params ? JSON.stringify(State.params) : ''}`;
+      break;
     case 'EXPORT':
       CONSOLE.value = LZUTF8.compress(toBinString(State.db.export()), {
         outputEncoding: 'Base64'

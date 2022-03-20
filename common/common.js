@@ -27,8 +27,9 @@ export const State = {
 
     try {
       const stmt = State.db.prepare(sql);
+      State.params && stmt.bind(State.params);
       while (stmt.step()) {
-        rows.push(stmt.getAsObject(State.params));
+        rows.push(stmt.getAsObject());
       }
     } catch (err) {
       printErrors(err);
