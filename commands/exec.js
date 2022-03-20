@@ -5,7 +5,9 @@ import {
   commandElement,
   toBinString,
   toBinArray,
-  tableContainer
+  tableContainer,
+  copyButton,
+  copyTable
 } from '../common/common.js';
 import { editor } from '../main.js';
 
@@ -37,43 +39,12 @@ export const execute = CONSOLE => {
         CONSOLE.value = '';
         consoleElement.value = '';
         tableContainer.style.display = 'none';
+        copyButton.style.display = 'none';
         editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       }
       break;
     case 'COPY':
-      const stmt = State.db.prepare(
-        editor.getSelection().trim() || editor.getValue()
-      );
-      State.params && stmt.bind(State.params);
-      let rows = [];
-      const max = {};
-      let cols;
-      while (stmt.step()) {
-        const content = stmt.getAsObject();
-        if (!cols) cols = stmt.getColumnNames();
-        cols.forEach(
-          key =>
-            (max[key] = Math.max(
-              max[key] ?? 0,
-              String(content[key]).length,
-              key.length
-            ))
-        );
-        rows.push(content);
-      }
-      rows = rows.map(content => {
-        let string = '';
-        cols.forEach(key => {
-          const str = String(content[key]);
-          string += ' '.repeat(2) + str + ' '.repeat(max[key] - str.length);
-        });
-        return string;
-      });
-      cols = cols.map(
-        key => ' '.repeat(2) + key + ' '.repeat(max[key] - key.length)
-      );
-      navigator.clipboard.writeText(cols.join('') + '\n\n' + rows.join('\n'));
-      stmt.free();
+      copyTable();
       break;
     case 'RUN':
       CONSOLE.value = '';
@@ -145,6 +116,7 @@ export const execute = CONSOLE => {
       );
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
+      copyButton.style.display = 'none';
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
     case 'DROP':
@@ -156,6 +128,7 @@ export const execute = CONSOLE => {
       State.db = new State.SQL.Database();
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
+      copyButton.style.display = 'none';
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
     case 'FORGET':

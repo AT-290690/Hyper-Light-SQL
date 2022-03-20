@@ -6,7 +6,9 @@ import {
   commandElement,
   State,
   toBinArray,
-  consoleElement
+  consoleElement,
+  copyButton,
+  copyTable
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -44,7 +46,7 @@ document.addEventListener('keydown', e => {
     }
   }
 });
-
+copyButton.addEventListener('click', copyTable);
 consoleElement.addEventListener('dblclick', () => {
   if (commandElement.style.display === 'none') {
     commandElement.style.display = 'block';

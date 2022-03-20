@@ -121,6 +121,7 @@ main {
   width: 90vw;
   resize: none;
   position: absolute;
+  text-indent: 45px;
   /* pointer-events: none; */
   bottom: 0;
 }
@@ -136,7 +137,17 @@ main {
   bottom: 0;
   opacity: 0.5;
 }
-
+#copy-table {
+  display: none;
+  background: transparent;
+  color: var(--comment);
+  border: solid 1px var(--border);
+  cursor: pointer;
+  position: absolute;
+  bottom: 40px;
+  padding: 5px;
+  z-index: 1000;
+}
 #command:focus {
   opacity: 1;
   left: 25%;
