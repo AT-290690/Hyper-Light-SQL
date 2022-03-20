@@ -28,7 +28,9 @@ export const execute = CONSOLE => {
       }
       break;
     case 'COPY':
-      const stmt = State.db.prepare(editor.getValue());
+      const stmt = State.db.prepare(
+        editor.getSelection().trim() || editor.getValue()
+      );
       let rows = [];
       const max = {};
       let cols;
@@ -58,7 +60,6 @@ export const execute = CONSOLE => {
       );
       navigator.clipboard.writeText(cols.join('') + '\n\n' + rows.join('\n'));
       commandElement.style.display = 'none';
-      editor.focus();
       break;
     case 'SAVE':
       CONSOLE.value = '';
@@ -89,6 +90,8 @@ export const execute = CONSOLE => {
         INSERT INTO employees VALUES (12,'WASHINGTON','ADMIN',6,'1998-04-16',18000,NULL,4);
         INSERT INTO employees VALUES (13,'MONROE','ENGINEER',10,'2000-12-03',30000,NULL,2);
         INSERT INTO employees VALUES (14,'ROOSEVELT','CPA',9,'1995-10-12',35000,NULL,1);`);
+      CONSOLE.value = '';
+      consoleElement.value = '';
 
       break;
     case 'HELP':

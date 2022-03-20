@@ -26,7 +26,7 @@ document.addEventListener('keydown', e => {
     e = e || window.event;
     e.preventDefault();
     e.stopPropagation();
-    State.executeSQL();
+    State.executeSQL(editor.getSelection().trim() || editor.getValue());
   } else if (e.key === 'Enter') {
     if (activeElement === commandElement) {
       execute(commandElement);

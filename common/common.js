@@ -13,7 +13,7 @@ export const printErrors = errors => {
 export const State = {
   lastSelection: '',
   params: null,
-  executeSQL: () => {
+  executeSQL: (sql = editor.getValue()) => {
     editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
     tableContainer.style.display = 'none';
     tableContainer.innerHTML = '';
@@ -26,7 +26,7 @@ export const State = {
     const rows = [];
 
     try {
-      const stmt = State.db.prepare(editor.getValue());
+      const stmt = State.db.prepare(sql);
       while (stmt.step()) {
         rows.push(stmt.getAsObject(State.params));
       }
