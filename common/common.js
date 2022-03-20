@@ -30,6 +30,7 @@ export const State = {
       while (stmt.step()) {
         rows.push(stmt.getAsObject());
       }
+      stmt.free();
     } catch (err) {
       printErrors(err);
     }

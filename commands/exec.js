@@ -23,6 +23,14 @@ export const execute = CONSOLE => {
         consoleElement.value = '';
       }
       break;
+    case 'OPEN':
+      State.db = new State.SQL.Database();
+      CONSOLE.value = '';
+      break;
+    case 'CLOSE':
+      State.db.close();
+      CONSOLE.value = '';
+      break;
     case 'CLEAR':
       {
         editor.setValue('');
@@ -42,7 +50,7 @@ export const execute = CONSOLE => {
       let cols;
       while (stmt.step()) {
         const content = stmt.getAsObject();
-        if (!cols) cols = Object.keys(content);
+        if (!cols) cols = stmt.getColumnNames();
         cols.forEach(
           key =>
             (max[key] = Math.max(
@@ -65,13 +73,12 @@ export const execute = CONSOLE => {
         key => ' '.repeat(2) + key + ' '.repeat(max[key] - key.length)
       );
       navigator.clipboard.writeText(cols.join('') + '\n\n' + rows.join('\n'));
-      commandElement.style.display = 'none';
+      stmt.free();
       break;
     case 'RUN':
       CONSOLE.value = '';
       consoleElement.value = '';
       State.executeSQL(editor.getValue());
-      commandElement.style.display = 'none';
       editor.focus();
       break;
     case 'SELECT':
@@ -85,6 +92,9 @@ export const execute = CONSOLE => {
     case 'TABLE':
       State.executeSQL(`SELECT * FROM ${stdArgs[0]}`);
       CONSOLE.value = '';
+      break;
+    case 'INFO':
+      State.executeSQL(`PRAGMA table_info(${stdArgs[0]})`);
       break;
     case 'IMPORT':
       State.db = new State.SQL.Database(
@@ -123,6 +133,7 @@ export const execute = CONSOLE => {
       break;
     case 'RESET':
       const db = window.localStorage.getItem('HyperLightDB');
+      State.db.close();
       State.db = new State.SQL.Database(
         db &&
           toBinArray(
@@ -141,6 +152,7 @@ export const execute = CONSOLE => {
       CONSOLE.value = '';
       break;
     case 'WHYPE':
+      State.db.close();
       State.db = new State.SQL.Database();
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
@@ -179,6 +191,7 @@ export const execute = CONSOLE => {
     case 'HELP':
       editor.setValue(`-- HELP: list these commands
 -- SETUP: runs a setup query from the editor and then clears the editor
+-- CLOSE: close the db
 -- CLEAR: clears the editor
 -- COPY: copies the query output
 -- RUN: executes the current query
@@ -186,6 +199,7 @@ export const execute = CONSOLE => {
 -- SET: set params [params] example: { "$id": 3, "$name": 'John' } (quotes are important)
 -- SELECT: replace content with select query for a [tablename]
 -- TABLE: outputs [tablename] as table
+-- INFO: display schema of [tablename] as table
 -- IMPORT: imports [base64Table]
 -- EXPORT: exports current table as base64 string
 -- STASH: stash all tables in localStorage
@@ -197,8 +211,6 @@ export const execute = CONSOLE => {
 
 ${editor.getValue()}`);
       CONSOLE.value = '';
-      commandElement.style.display = 'none';
-
       break;
     default:
       printErrors(CMD + ' does not exist!');
