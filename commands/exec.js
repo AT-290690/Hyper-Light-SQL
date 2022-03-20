@@ -51,7 +51,7 @@ export const execute = CONSOLE => {
           const str = String(content[key]);
           string += ' '.repeat(2) + str + ' '.repeat(max[key] - str.length);
         });
-        return string + '\n';
+        return string;
       });
       cols = cols.map(
         key => ' '.repeat(2) + key + ' '.repeat(max[key] - key.length)
