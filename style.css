@@ -80,7 +80,12 @@ td {
   font-size: 75%;
   text-align: center;
 }
-
+td {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 tr:hover {
   background-color: #31303195;
 }
