@@ -4,7 +4,8 @@ import {
   State,
   commandElement,
   toBinString,
-  toBinArray
+  toBinArray,
+  tableContainer
 } from '../common/common.js';
 import { editor } from '../main.js';
 
@@ -14,7 +15,7 @@ export const execute = CONSOLE => {
   const stdArgs = stdInput.slice(1);
 
   switch (CMD) {
-    case 'CREATE':
+    case 'SETUP':
       {
         State.db.run(editor.getValue());
         editor.setValue('');
@@ -27,6 +28,8 @@ export const execute = CONSOLE => {
         editor.setValue('');
         CONSOLE.value = '';
         consoleElement.value = '';
+        tableContainer.style.display = 'none';
+        editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       }
       break;
     case 'COPY':
@@ -118,6 +121,35 @@ export const execute = CONSOLE => {
       );
       CONSOLE.value = '';
       break;
+    case 'RESET':
+      const db = window.localStorage.getItem('HyperLightDB');
+      State.db = new State.SQL.Database(
+        db &&
+          toBinArray(
+            LZUTF8.decompress(db, {
+              inputEncoding: 'Base64',
+              outputEncoding: 'String'
+            })
+          )
+      );
+      CONSOLE.value = '';
+      tableContainer.style.display = 'none';
+      editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
+      break;
+    case 'DROP':
+      State.executeSQL(`DROP TABLE IF EXISTS ${stdArgs}`);
+      CONSOLE.value = '';
+      break;
+    case 'WHYPE':
+      State.db = new State.SQL.Database();
+      CONSOLE.value = '';
+      tableContainer.style.display = 'none';
+      editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
+      break;
+    case 'FORGET':
+      window.localStorage.removeItem('HyperLightDB');
+      CONSOLE.value = '';
+      break;
     case 'EMPLOYEES':
       editor.setValue(`DROP TABLE IF EXISTS employees;
       CREATE TABLE employees( id          integer,  name    text,
@@ -146,7 +178,7 @@ export const execute = CONSOLE => {
 
     case 'HELP':
       editor.setValue(`-- HELP: list these commands
--- CREATE: runs a setup query from the editor and then clears the editor
+-- SETUP: runs a setup query from the editor and then clears the editor
 -- CLEAR: clears the editor
 -- COPY: copies the query output
 -- RUN: executes the current query
@@ -157,6 +189,10 @@ export const execute = CONSOLE => {
 -- IMPORT: imports [base64Table]
 -- EXPORT: exports current table as base64 string
 -- STASH: stash all tables in localStorage
+-- RESET: load db from stash state
+-- DROP: drop tables [table1 table2 table3]
+-- WHYPE: reset to empty db
+-- FORGET: clear stash
 -- EMPLOYEES: prepare a mock table of employees
 
 ${editor.getValue()}`);

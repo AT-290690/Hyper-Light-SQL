@@ -22,26 +22,14 @@
   --number: #ff4a98;
   --string: #ff4a98;
   --keyword: #7f83ff;
-  --font-family: 'Fira Code';
-}
-
-@font-face {
-  font-family: 'Fira Code';
-  src: url(assets/fonts/FiraCode-Regular.ttf) format('truetype');
-  font-display: swap;
-}
-/* 
-@font-face {
-  font-family: 'Apple';
-  src: url(assets/fonts/Apple.ttf) format('truetype');
-  font-display: swap;
+  --font-family: 'Hermit-Regular';
 }
 
 @font-face {
   font-family: 'Hermit-Regular';
   src: url(assets/fonts/Hermit-Regular.otf) format('opentype');
   font-display: swap;
-} */
+}
 #table-container {
   border: solid 1px var(--border);
   color: var(--icons);
@@ -59,8 +47,10 @@
 tr:first-child th {
   position: sticky;
   top: 0;
-  box-shadow: 0px 5px 5px #31303195;
+  box-shadow: 0px 10px 10px #42c6ff55;
   border-bottom: 1px solid #42c6ff;
+  font-weight: 900;
+  font-size: 100%;
 }
 
 th {
@@ -79,15 +69,15 @@ td {
   padding-bottom: 10px;
   font-size: 75%;
   text-align: center;
-}
-td {
   max-width: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 tr:hover {
-  background-color: #31303195;
+  background-color: #7f83ff69;
+  color: var(--color-fourtly);
 }
 
 body {
@@ -146,10 +136,6 @@ main {
   position: absolute;
   bottom: 0;
 }
-/* #main-container {
-  display: flex;
-  justify-content: space-between;
-} */
 
 @keyframes fadeOutOpacity {
   0% {
