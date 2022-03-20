@@ -11,7 +11,6 @@ export const printErrors = errors => {
 };
 
 export const State = {
-  lastSelection: '',
   params: null,
   executeSQL: (sql = editor.getValue()) => {
     editor.setSize(window.innerWidth - 15, window.innerHeight - 80);

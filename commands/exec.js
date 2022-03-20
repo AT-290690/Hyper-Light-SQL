@@ -95,8 +95,9 @@ export const execute = CONSOLE => {
       break;
     case 'SET':
       {
-        State.params = JSON.parse(stdArgs.join(' '));
-        State.executeSQL();
+        (State.params = JSON.parse(stdArgs.join(' ')))
+          ? State.executeSQL()
+          : (CONSOLE.value = '');
       }
       break;
     case 'PARAMS':
@@ -148,6 +149,8 @@ export const execute = CONSOLE => {
 -- CLEAR: clears the editor
 -- COPY: copies the query output
 -- RUN: executes the current query
+-- PARAMS: view current params
+-- SET: set params [params] example: { "$id": 3, "$name": 'John' } (quotes are important)
 -- SELECT: replace content with select query for a [tablename]
 -- TABLE: outputs [tablename] as table
 -- IMPORT: imports [base64Table]
@@ -156,6 +159,9 @@ export const execute = CONSOLE => {
 -- EMPLOYEES: prepare a mock table of employees
 
 ${editor.getValue()}`);
+      CONSOLE.value = '';
+      commandElement.style.display = 'none';
+
       break;
     default:
       printErrors(CMD + ' does not exist!');
