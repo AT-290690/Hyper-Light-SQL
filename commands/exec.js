@@ -63,7 +63,7 @@ export const execute = CONSOLE => {
       navigator.clipboard.writeText(cols.join('') + '\n\n' + rows.join('\n'));
       commandElement.style.display = 'none';
       break;
-    case 'SAVE':
+    case 'RUN':
       CONSOLE.value = '';
       consoleElement.value = '';
       State.executeSQL(editor.getValue());
@@ -134,8 +134,19 @@ export const execute = CONSOLE => {
       break;
 
     case 'HELP':
-      CONSOLE.value =
-        'CREATE, CLEAR, COPY, SAVE, SELECT, TABLE, EXPORT, EMPLOYEES, HELP';
+      editor.setValue(`-- HELP: list these commands
+-- CREATE: runs a setup query from the editor and then clears the editor
+-- CLEAR: clears the editor
+-- COPY: copies the query output
+-- RUN: executes the current query
+-- SELECT: replace content with select query for a [tablename]
+-- TABLE: outputs [tablename] as table
+-- IMPORT: imports [base64Table]
+-- EXPORT: exports current table as base64 string
+-- STASH: stash all tables in localStorage
+-- EMPLOYEES: prepare a mock table of employees
+
+${editor.getValue()}`);
       break;
     default:
       printErrors(CMD + ' does not exist!');
