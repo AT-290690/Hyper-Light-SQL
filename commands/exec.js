@@ -68,6 +68,14 @@ export const execute = CONSOLE => {
       commandElement.style.display = 'none';
       editor.focus();
       break;
+    case 'SELECT':
+      {
+        const sql = `SELECT * FROM ${stdArgs[0]}`;
+        State.executeSQL(sql);
+        editor.setValue(sql);
+        CONSOLE.value = '';
+      }
+      break;
     case 'TABLE':
       State.executeSQL(`SELECT * FROM ${stdArgs[0]}`);
       CONSOLE.value = '';
@@ -99,7 +107,8 @@ export const execute = CONSOLE => {
       break;
 
     case 'HELP':
-      CONSOLE.value = 'CREATE, CLEAR, COPY, SAVE, TABLE, EMPLOYEES, HELP';
+      CONSOLE.value =
+        'CREATE, CLEAR, COPY, SAVE, SELECT, TABLE, EMPLOYEES, HELP';
       break;
     default:
       printErrors(CMD + ' does not exist!');
