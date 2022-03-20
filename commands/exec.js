@@ -2,11 +2,9 @@ import {
   consoleElement,
   printErrors,
   State,
-  commandElement,
   toBinString,
   toBinArray,
   tableContainer,
-  copyButton,
   copyTable
 } from '../common/common.js';
 import { editor } from '../main.js';
@@ -46,8 +44,8 @@ export const execute = CONSOLE => {
     case 'COPY':
       copyTable();
       break;
+    case 'X':
     case 'RUN':
-      CONSOLE.value = '';
       consoleElement.value = '';
       State.executeSQL(editor.getValue());
       editor.focus();
@@ -62,7 +60,6 @@ export const execute = CONSOLE => {
       break;
     case 'TABLE':
       State.executeSQL(`SELECT * FROM ${stdArgs[0]}`);
-      CONSOLE.value = '';
       break;
     case 'INFO':
       State.executeSQL(`PRAGMA table_info(${stdArgs[0]})`);

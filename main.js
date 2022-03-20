@@ -8,7 +8,8 @@ import {
   toBinArray,
   consoleElement,
   copyButton,
-  copyTable
+  copyTable,
+  exeButton
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -47,12 +48,12 @@ document.addEventListener('keydown', e => {
   }
 });
 copyButton.addEventListener('click', copyTable);
-consoleElement.addEventListener('dblclick', () => {
-  if (commandElement.style.display === 'none') {
+exeButton.addEventListener('click', () => {
+  if (commandElement.style.display === 'block') {
+    commandElement.style.display = 'none';
+  } else {
     commandElement.style.display = 'block';
     commandElement.focus();
-  } else {
-    commandElement.style.display = 'none';
   }
 });
 
