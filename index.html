@@ -139,24 +139,22 @@
         />
       </svg>
     </div>
-    <textarea
+    <input
       id="console"
       spellcheck="false"
       autocomplete="off"
       class="info_line"
       defer
-   
-    ></textarea>
-    <button id="exe">>_</button>
-    <button id="copy-table">copy</button>
-
+      disabled
+    />
+    <div class="toolbar">
+      <button id="copy-table">copy</button>
+    </div>
     <input
-      placeholder=">_"
       autocomplete="off"
       id="command"
       spellcheck="false"
       class="info_line"
-      style="display:none;"
       defer
     ></input>
     <script id="lzutf8" src="libs/compression/lzutf8.min.js"></script>

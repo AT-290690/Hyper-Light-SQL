@@ -39,7 +39,6 @@ export const execute = CONSOLE => {
         CONSOLE.value = '';
         consoleElement.value = '';
         tableContainer.style.display = 'none';
-
         editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       }
       break;

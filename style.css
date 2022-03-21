@@ -10,8 +10,6 @@
   --color-thirdly: #ff4a98;
   --color-fourtly: #ffce2e;
   --color-fiftly: #2eff85;
-  --gutters-border: 1px solid transparent;
-  --border-width: 1px;
   --error: #ff0000;
   --warning: #ffed2b;
   --success: #00ff00;
@@ -30,6 +28,7 @@
   src: url(assets/fonts/Hermit-Regular.otf) format('opentype');
   font-display: swap;
 }
+
 #table-container {
   border: solid 1px var(--border);
   color: var(--icons);
@@ -38,34 +37,38 @@
   overflow-y: scroll;
   max-height: 50vh;
 }
+
 #label-container {
   position: fixed;
   border: solid 1px var(--border);
   color: var(--icons);
   font-family: var(--font-family);
 }
+
 tr:first-child th {
   position: sticky;
   top: 0;
-  box-shadow: 0px 10px 10px #42c6ff55;
-  border-bottom: 1px solid #42c6ff;
+  box-shadow: 0px 10px 10px #ff4a9855;
+  border-bottom: 1px solid var(--color-thirdly);
   font-weight: 900;
 }
 
 th {
   color: var(--icons);
-  background-color: #2d6791;
+  background-color: #a83064;
 }
+
 table {
   width: 100%;
   max-height: 300px;
 }
+
 th,
 td {
   border-right: solid 1px var(--border);
   border-top: solid 1px var(--border);
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   font-size: 75%;
   text-align: center;
   max-width: 100px;
@@ -82,9 +85,11 @@ tr:hover {
 body {
   background-color: var(--background-primary);
 }
+
 main {
   display: none;
 }
+
 .CodeMirror {
   width: 100%;
 }
@@ -110,10 +115,12 @@ main {
   /* border: var(--border-width) solid #ff275d; */
   color: #ff275d;
 }
+
 .info_line {
   border: var(--border-width) solid var(--comment);
   color: var(--color-primary);
 }
+
 #console {
   outline: none;
   border: none;
@@ -125,39 +132,51 @@ main {
   /* pointer-events: none; */
   bottom: 0;
 }
-#command {
-  top: 25%;
-  left: 50%;
-  outline: none;
-  height: 50px;
-  width: 5%;
-  resize: none;
-  border: solid 1px var(--border);
-  position: absolute;
-  bottom: 0;
-  opacity: 0.5;
-}
-#copy-table,
-#exe {
+
+#copy-table {
   background: transparent;
   color: var(--comment);
   border: none;
   cursor: pointer;
-  position: absolute;
   padding: 5px;
+  width: 50px;
   z-index: 1000;
 }
-#copy-table {
-  bottom: 40px;
-}
-#exe {
-  bottom: 10px;
-}
-#command:focus {
-  opacity: 1;
+
+#command {
+  top: 1px;
+  outline: none;
   left: 25%;
+  height: 5px;
+  position: absolute;
   width: 50%;
+  background-color: var(--color-thirdly);
+  animation-name: scaleDownX;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+  animation-duration: 0.14s;
+  animation-fill-mode: forwards;
+  transform-origin: center;
+  border: none;
+  color: transparent;
+  cursor: pointer;
 }
+
+#command:focus {
+  cursor: text;
+  color: var(--icons);
+  background-color: var(--background-primary);
+  width: 50%;
+  height: 15px;
+  animation-name: scaleUpX;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+  animation-duration: 0.25s;
+  animation-fill-mode: forwards;
+  transform-origin: center;
+  border: solid 1px var(--border);
+}
+
 @keyframes fadeOutOpacity {
   0% {
     opacity: 1;
@@ -166,6 +185,13 @@ main {
     opacity: 0;
   }
 }
+
+.toolbar {
+  display: flex;
+  width: 100px;
+  justify-content: space-between;
+}
+
 #splash-screen {
   width: 100%;
   height: 100%;
@@ -181,20 +207,38 @@ main {
   text-align: center;
   z-index: 2000;
 }
+
 #splash-logo {
   animation-name: fadeInOpacity;
   animation-iteration-count: 1;
   animation-timing-function: ease-in;
   animation-duration: 0.8s;
   animation-fill-mode: forwards;
+  width: 15%;
 }
+
 @keyframes fadeInOpacity {
   0% {
-    width: 15%;
     opacity: 0;
   }
   100% {
     opacity: 1;
-    width: 15%;
+  }
+}
+
+@keyframes scaleUpX {
+  0% {
+    transform: scale(0.1, 0.5);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+@keyframes scaleDownX {
+  0% {
+    transform: scale(1, 1);
+  }
+  100% {
+    transform: scale(0.1, 0.5);
   }
 }

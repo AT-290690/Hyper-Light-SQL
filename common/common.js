@@ -5,7 +5,6 @@ export const tableContainer = document.getElementById('table-container');
 export const editorContainer = document.getElementById('editor-container');
 export const labelContainer = document.getElementById('labels-container');
 export const copyButton = document.getElementById('copy-table');
-export const exeButton = document.getElementById('exe');
 
 export const printErrors = errors => {
   consoleElement.classList.remove('info_line');
