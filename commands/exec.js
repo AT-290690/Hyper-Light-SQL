@@ -5,7 +5,9 @@ import {
   toBinString,
   toBinArray,
   tableContainer,
-  copyTable
+  copyTable,
+  downloadCSVFile,
+  htmlToCSV
 } from '../common/common.js';
 import { editor } from '../main.js';
 
@@ -95,6 +97,13 @@ export const execute = CONSOLE => {
         outputEncoding: 'Base64'
       });
       break;
+    case 'CSV':
+      downloadCSVFile(
+        htmlToCSV(tableContainer.firstChild).join('\n'),
+        stdArgs[0]
+      );
+      CONSOLE.value = '';
+      break;
     case 'STASH':
       window.localStorage.setItem(
         'HyperLightDB',
@@ -176,8 +185,9 @@ export const execute = CONSOLE => {
 -- TABLE: outputs [tablename] as table
 -- INFO: display schema of [tablename] as table
 -- TABLES: show a list of tables
--- IMPORT: imports [base64Table]
--- EXPORT: exports current table as base64 string
+-- IMPORT: imports [base64DB]
+-- EXPORT: exports current db as base64 string
+-- CSV: download current table as csv file with [name]
 -- STASH: stash all tables in localStorage
 -- RESET: load db from stash state
 -- DROP: drop tables [table1 table2 table3]

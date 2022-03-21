@@ -136,7 +136,6 @@ export const CodeMirror = (parent = document.body) => {
     parent
   });
   return {
-    // stateMap,
     posToOffset: (pos, doc = cm.state.doc) =>
       doc.line(pos.line + 1).from + pos.ch,
     offsetToPos: (offset, doc = cm.state.doc) => {

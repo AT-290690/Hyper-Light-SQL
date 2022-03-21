@@ -144,3 +144,30 @@ export const toBinString = arr => {
   }
   return strings.join('');
 };
+
+export const htmlToCSV = html => {
+  const data = [];
+  const rows = document.querySelectorAll('table tr');
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = [],
+      cols = rows[i].querySelectorAll('td, th');
+
+    for (let j = 0; j < cols.length; j++) {
+      row.push(cols[j].innerText);
+    }
+
+    data.push(row.join(','));
+  }
+  return data;
+};
+
+export const downloadCSVFile = (csv, filename) => {
+  const csvFile = new Blob([csv], { type: 'text/csv' });
+  const downloadLink = document.createElement('a');
+  downloadLink.download = filename;
+  downloadLink.href = window.URL.createObjectURL(csvFile);
+  downloadLink.style.display = 'none';
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+};

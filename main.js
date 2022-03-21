@@ -6,10 +6,11 @@ import {
   commandElement,
   State,
   toBinArray,
-  consoleElement,
   copyButton,
   copyTable,
-  exeButton
+  exeButton,
+  consoleElement,
+  printErrors
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -70,3 +71,60 @@ setTimeout(() => {
       )
   );
 }, 1000);
+consoleElement.addEventListener('dragleave', ev => {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+  ev.target.style.border = 'none';
+});
+
+const parseValue = value => {
+  return value.split(',').map(v => `'${v}'`);
+};
+consoleElement.addEventListener('drop', ev => {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+
+  if (ev.dataTransfer.items) {
+    // Use DataTransferItemList interface to access the file(s)
+    for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+      // If dropped items aren't files, reject them
+      if (ev.dataTransfer.items[i].kind === 'file') {
+        const file = ev.dataTransfer.items[i].getAsFile();
+        const reader = new FileReader();
+        reader.onload = () => {
+          const [columns, ...rows] = reader.result.split('\n');
+          const columnNames = columns
+            .split(',')
+            .map(c => `'${c}'`)
+            .join(',');
+          const fileName = file.name.split('.csv')[0];
+          try {
+            editor.setValue(
+              `DROP TABLE IF EXISTS "${fileName}";
+CREATE TABLE "${fileName}" (${columnNames});
+              ${rows.reduce(
+                (acc, values) =>
+                  (acc += `\nINSERT INTO "${fileName}" (${columnNames}) \nVALUES (${parseValue(
+                    values
+                  )});`),
+                ''
+              )}
+              `
+            );
+
+            // State.db.run(insert);
+          } catch (err) {
+            printErrors(err);
+          }
+        };
+        reader.readAsText(file);
+      }
+    }
+  }
+  ev.target.style.border = 'none';
+});
+consoleElement.addEventListener('dragenter', ev => {
+  // Prevent default behavior (Prevent file from being opened)
+  ev.preventDefault();
+  ev.target.style.border = 'dashed 2px #7f83ff';
+});
