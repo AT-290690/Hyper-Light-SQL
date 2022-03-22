@@ -7,7 +7,8 @@ import {
   State,
   toBinArray,
   copyButton,
-  copyTable
+  copyTable,
+  exeButton
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -43,6 +44,9 @@ document.addEventListener('keydown', e => {
   }
 });
 copyButton.addEventListener('click', copyTable);
+exeButton.addEventListener('click', () =>
+  State.executeSQL(editor.getSelection().trim() || editor.getValue())
+);
 
 setTimeout(() => {
   document.body.removeChild(document.getElementById('splash-screen'));

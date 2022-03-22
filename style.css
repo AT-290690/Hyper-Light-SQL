@@ -128,11 +128,15 @@ main {
   width: 90vw;
   resize: none;
   position: absolute;
-  text-indent: 45px;
+  text-indent: 15px;
   /* pointer-events: none; */
   bottom: 0;
 }
-
+#exe:hover,
+#copy-table:hover {
+  color: var(--color-thirdly);
+}
+#exe,
 #copy-table {
   background: transparent;
   color: var(--comment);
@@ -166,7 +170,6 @@ main {
   cursor: text;
   color: var(--icons);
   background-color: var(--background-primary);
-  width: 50%;
   height: 15px;
   animation-name: scaleUpX;
   animation-iteration-count: 1;
