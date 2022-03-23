@@ -197,40 +197,57 @@ export const execute = CONSOLE => {
 
       break;
 
-    case 'FETCH':
-      fetch(stdArgs[1])
-        .then(res => res.text())
-        .then(data => {
-          const [columns, ...rows] = data.split('\n');
-          const columntNames = columns
-            .split(',')
-            .map(c => `'${c}'`)
-            .join(',');
-          const insert = rows.reduce(
-            (acc, values) =>
-              (acc += `INSERT INTO "${
-                stdArgs[0]
-              }" (${columntNames}) VALUES (${values.split(',').map(x => {
-                if (x === '') return 'NULL';
-                if (!isNaN(x)) return x;
-                switch (x.toLowerCase()) {
-                  case 'null':
-                  case 'false':
-                  case 'true':
-                    return x;
-                  default:
-                    return `'${x}'`;
-                }
-              })});`),
-            ''
-          );
-          State.db.run(insert);
-          execute({ value: `TABLE ${stdArgs[0]}` });
-          CONSOLE.value = '';
-        })
-        .catch(err => {
-          printErrors(err);
-        });
+    case 'UPLOAD':
+      {
+        const upload = document.createElement('input');
+        document.body.appendChild(upload);
+        upload.style.display = 'none';
+        upload.type = 'file';
+        upload.name = 'creds';
+
+        upload.addEventListener(
+          'change',
+          e => {
+            const file = e.currentTarget.files[0];
+            const reader = new FileReader();
+            reader.onload = async e => {
+              const [columns, ...rows] = window
+                .atob(e.target.result.split('base64,')[1])
+                .split('\n');
+              const columntNames = columns
+                .split(',')
+                .map(c => `'${c}'`)
+                .join(',');
+              const insert = rows.reduce(
+                (acc, values) =>
+                  (acc += `INSERT INTO "${
+                    stdArgs[0]
+                  }" (${columntNames}) VALUES (${values.split(',').map(x => {
+                    if (x === '') return 'NULL';
+                    if (!isNaN(x)) return x;
+                    switch (x.toLowerCase()) {
+                      case 'null':
+                      case 'false':
+                      case 'true':
+                        return x;
+                      default:
+                        return `'${x}'`;
+                    }
+                  })});`),
+                ''
+              );
+              State.db.run(insert);
+              execute({ value: `TABLE ${stdArgs[0]}` });
+              CONSOLE.value = '';
+              document.body.removeChild(upload);
+            };
+            reader.readAsDataURL(file);
+          },
+          false
+        );
+
+        upload.click();
+      }
       break;
     case 'HELP':
       editor.setValue(`-- HELP: list these commands
@@ -247,7 +264,7 @@ export const execute = CONSOLE => {
 -- TABLES: show a list of tables
 -- IMPORT: imports [base64DB]
 -- EXPORT: exports current db as base64 string
--- FETCH: insert into [tablename] data from [url]
+-- UPLOAD: insert into [tablename] data from [file]
 -- CSV: download current table as csv file with [name]
 -- STASH: stash all tables in localStorage
 -- RESET: load db from stash state
