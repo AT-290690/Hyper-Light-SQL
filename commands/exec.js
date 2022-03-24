@@ -196,7 +196,6 @@ export const execute = CONSOLE => {
       consoleElement.value = '';
 
       break;
-
     case 'UPLOAD':
       {
         const upload = document.createElement('input');

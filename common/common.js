@@ -99,8 +99,18 @@ export const State = {
       printErrors(err);
     }
 
-    if (!rows.length)
-      return editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
+    if (!rows.length) {
+      const img = document.createElement('img');
+      img.src = '../assets/images/404.svg';
+      img.style.width = '100%';
+      img.style.height = '50vh';
+      tableContainer.appendChild(img);
+      tableContainer.style.display = 'block';
+      return editor.setSize(
+        window.innerWidth - 15,
+        window.innerHeight / 2 - 80
+      );
+    }
 
     const cols = Object.keys(rows[0]);
     cols.forEach(key => {
