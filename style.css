@@ -120,7 +120,12 @@ main {
   border: var(--border-width) solid var(--comment);
   color: var(--color-primary);
 }
-
+#empty-image {
+  display: none;
+  width: 100%;
+  height: 50vh;
+  border: solid 1px var(--border);
+}
 #console {
   outline: none;
   border: none;

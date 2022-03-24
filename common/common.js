@@ -6,7 +6,7 @@ export const editorContainer = document.getElementById('editor-container');
 export const labelContainer = document.getElementById('labels-container');
 export const copyButton = document.getElementById('copy-table');
 export const exeButton = document.getElementById('exe');
-
+export const emptyImage = document.getElementById('empty-image');
 export const printErrors = errors => {
   consoleElement.classList.remove('info_line');
   consoleElement.classList.add('error_line');
@@ -80,6 +80,8 @@ export const State = {
     editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
     tableContainer.style.display = 'none';
     tableContainer.innerHTML = '';
+    emptyImage.style.display = 'none';
+
     consoleElement.value = '';
     consoleElement.classList.add('info_line');
     consoleElement.classList.remove('error_line');
@@ -100,12 +102,7 @@ export const State = {
     }
 
     if (!rows.length) {
-      const img = document.createElement('img');
-      img.src = '../assets/images/404.svg';
-      img.style.width = '100%';
-      img.style.height = '50vh';
-      tableContainer.appendChild(img);
-      tableContainer.style.display = 'block';
+      emptyImage.style.display = 'block';
       return editor.setSize(
         window.innerWidth - 15,
         window.innerHeight / 2 - 80

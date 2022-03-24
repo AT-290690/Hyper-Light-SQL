@@ -7,7 +7,8 @@ import {
   tableContainer,
   copyTable,
   downloadCSVFile,
-  htmlToCSV
+  htmlToCSV,
+  emptyImage
 } from '../common/common.js';
 import { editor } from '../main.js';
 
@@ -31,6 +32,7 @@ export const execute = CONSOLE => {
       break;
     case 'HIDE':
       tableContainer.style.display = 'none';
+      emptyImage.style.display = 'none';
       CONSOLE.value = '';
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
@@ -44,6 +46,7 @@ export const execute = CONSOLE => {
         CONSOLE.value = '';
         consoleElement.value = '';
         tableContainer.style.display = 'none';
+        emptyImage.style.display = 'none';
         editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       }
       break;
@@ -130,6 +133,7 @@ export const execute = CONSOLE => {
       );
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
+      emptyImage.style.display = 'none';
 
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
@@ -142,7 +146,7 @@ export const execute = CONSOLE => {
       State.db = new State.SQL.Database();
       CONSOLE.value = '';
       tableContainer.style.display = 'none';
-
+      emptyImage.style.display = 'none';
       editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
       break;
     case 'FORGET':
