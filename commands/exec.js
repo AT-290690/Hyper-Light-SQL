@@ -29,6 +29,11 @@ export const execute = CONSOLE => {
       State.db = new State.SQL.Database();
       CONSOLE.value = '';
       break;
+    case 'HIDE':
+      tableContainer.style.display = 'none';
+      CONSOLE.value = '';
+      editor.setSize(window.innerWidth - 15, window.innerHeight - 80);
+      break;
     case 'CLOSE':
       State.db.close();
       CONSOLE.value = '';
@@ -52,7 +57,7 @@ export const execute = CONSOLE => {
       break;
     case 'SELECT':
       {
-        const sql = `SELECT * FROM ${stdArgs[0]}`;
+        const sql = `select * from ${stdArgs[0]}`;
         State.executeSQL(sql);
         editor.setValue(sql);
         CONSOLE.value = '';
@@ -249,7 +254,6 @@ export const execute = CONSOLE => {
               }
               if (i === files.length - 1) {
                 CONSOLE.value = '';
-                document.body.removeChild(upload);
               }
             };
             reader.readAsDataURL(files[i]);
@@ -259,6 +263,7 @@ export const execute = CONSOLE => {
       );
 
       upload.click();
+      document.body.removeChild(upload);
     }
     case 'FROM_FILE':
       {
@@ -302,7 +307,6 @@ export const execute = CONSOLE => {
               State.db.run(insert);
               execute({ value: `TABLE ${stdArgs[0]}` });
               CONSOLE.value = '';
-              document.body.removeChild(upload);
             };
             reader.readAsDataURL(file);
           },
@@ -310,12 +314,14 @@ export const execute = CONSOLE => {
         );
 
         upload.click();
+        document.body.removeChild(upload);
       }
       break;
     case 'HELP':
       editor.setValue(`-- HELP: list these commands
 -- SETUP: runs a setup query from the editor and then clears the editor
 -- CLOSE: close the db
+-- HIDE: hide the table
 -- CLEAR: clears the editor
 -- COPY: copies the query output
 -- RUN: executes the current query
