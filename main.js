@@ -8,7 +8,8 @@ import {
   toBinArray,
   copyButton,
   copyTable,
-  exeButton
+  exeButton,
+  emptyImage
 } from './common/common.js';
 export const editor = CodeMirror(editorContainer, {});
 
@@ -19,7 +20,7 @@ initSqlJs({
 }).then(SQL => (State.SQL = SQL));
 
 window.addEventListener('resize', () =>
-  tableContainer.innerHTML
+  tableContainer.innerHTML || emptyImage.style.display !== 'none'
     ? editor.setSize(window.innerWidth - 15, window.innerHeight / 2 - 80)
     : editor.setSize(window.innerWidth - 15, window.innerHeight - 80)
 );
