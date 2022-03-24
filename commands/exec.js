@@ -196,13 +196,77 @@ export const execute = CONSOLE => {
       consoleElement.value = '';
 
       break;
-    case 'UPLOAD':
+    case 'FROM_FOLDER': {
+      const upload = document.createElement('input');
+      document.body.appendChild(upload);
+      upload.setAttribute('webkitdirectory', true);
+      upload.setAttribute('multiple', true);
+      upload.type = 'file';
+      upload.name = 'load-folder';
+
+      upload.addEventListener(
+        'change',
+        e => {
+          const files = e.currentTarget.files;
+          for (let i = 0; i < files.length; i++) {
+            let filePath = files[i].webkitRelativePath.split('/');
+            filePath.shift();
+            filePath = filePath.join('/');
+            const filename = filePath.split('.');
+            const type = filename.pop();
+            if (type !== 'csv' && type !== 'sch') continue;
+            const reader = new FileReader();
+            reader.onload = async e => {
+              if (type === 'csv') {
+                const [columns, ...rows] = window
+                  .atob(e.target.result.split('base64,')[1])
+                  .split('\n');
+                const columntNames = columns
+                  .split(',')
+                  .map(c => `'${c}'`)
+                  .join(',');
+                const insert = rows.reduce(
+                  (acc, values) =>
+                    (acc += `INSERT INTO "${
+                      filename[1]
+                    }" (${columntNames}) VALUES (${values.split(',').map(x => {
+                      if (x === '') return 'NULL';
+                      if (!isNaN(x)) return x;
+                      switch (x.toLowerCase()) {
+                        case 'null':
+                        case 'false':
+                        case 'true':
+                          return x;
+                        default:
+                          return `'${x}'`;
+                      }
+                    })});`),
+                  ''
+                );
+                State.db.run(insert);
+              } else if (type === 'sch') {
+                State.db.run(window.atob(e.target.result.split('base64,')[1]));
+              }
+              if (i === files.length - 1) {
+                CONSOLE.value = '';
+                document.body.removeChild(upload);
+              }
+            };
+            reader.readAsDataURL(files[i]);
+          }
+        },
+        false
+      );
+
+      upload.click();
+    }
+    case 'FROM_FILE':
       {
         const upload = document.createElement('input');
         document.body.appendChild(upload);
         upload.style.display = 'none';
         upload.type = 'file';
-        upload.name = 'creds';
+        upload.name = 'load-file';
 
         upload.addEventListener(
           'change',
@@ -263,7 +327,8 @@ export const execute = CONSOLE => {
 -- TABLES: show a list of tables
 -- IMPORT: imports [base64DB]
 -- EXPORT: exports current db as base64 string
--- UPLOAD: insert into [tablename] data from [file]
+-- FROM_FILE: insert into [tablename] data from [file]
+-- FROM_FOLDER: insert data from [folder] where csv files get inserted in tables which names are the filenames
 -- CSV: download current table as csv file with [name]
 -- STASH: stash all tables in localStorage
 -- RESET: load db from stash state
